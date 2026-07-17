@@ -1,0 +1,55 @@
+modules = ["php-8.2"]
+[nix]
+channel = "stable-25_05"
+
+[agent]
+expertMode = true
+
+[userenv]
+
+[userenv.shared]
+APP_DEBUG = "true"
+APP_ENV = "local"
+APP_NAME = "ReelSound"
+APP_URL = "https://localhost"
+APP_VERSION = "1.0.0"
+BROADCAST_DRIVER = "log"
+CACHE_DRIVER = "file"
+DB_CONNECTION = "sqlite"
+DB_DATABASE = "/home/runner/workspace/database/database.sqlite"
+FILESYSTEM_DISK = "local"
+LOG_CHANNEL = "daily"
+LOG_LEVEL = "error"
+QUEUE_CONNECTION = "sync"
+SESSION_DRIVER = "file"
+SESSION_LIFETIME = "120"
+DB_PREFIX = ""
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start App"
+
+[[workflows.workflow]]
+name = "Start App"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php artisan serve --host=0.0.0.0 --port=5000"
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 5001
+externalPort = 3001

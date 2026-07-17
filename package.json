@@ -1,0 +1,12 @@
+{
+    "scripts": {
+        "release:clone": "git clone https://github.com/codespikex/tiktok-downloader-v3.git ./release",
+        "release:rm": "rm -rf ./release",
+        "release:no-vcs": "cd ./release && rm -rf .git",
+        "release:install": "cd ./release && composer install --prefer-dist --no-interaction --no-dev --no-cache -o",
+        "release:key": "cd ./release && cp .env.example .env && php artisan key:generate",
+        "release:zip": "cd ./release && zip -r ../script-v$npm_package_version.zip .",
+        "new:release": "pnpm release:rm && pnpm release:clone && pnpm release:no-vcs && pnpm release:install && pnpm release:key && pnpm release:zip && pnpm release:rm"
+    },
+    "version": "3.0.6"
+}
