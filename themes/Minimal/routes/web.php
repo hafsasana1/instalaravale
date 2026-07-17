@@ -24,6 +24,7 @@ Route::get("/sitemap.xml", SitemapController::class)->name('sitemap');
 Route::middleware(['web', 'theme'])->group(function () {
     Route::view('/tos', "theme::tos")->name('tos');
     Route::view('/privacy', "theme::privacy")->name('privacy');
+    Route::view('/instagram-reels-audio-download', "theme::reels-audio")->name('reels-audio');
 });
 
 Route::localization()->middleware(['web', 'theme'])->group(function () {
