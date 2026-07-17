@@ -6,7 +6,11 @@
 
             {{-- Search form (hidden when result shown) --}}
             <div x-show="!instaResult">
-                <h1>Instagram Audio Downloader</h1>
+                <h1 class="splash-hero-heading">
+                    Instagram Audio Downloader –<br>
+                    <span class="splash-hero-gradient">Download Audio from Instagram<br>Reels, Videos &amp; Stories</span>
+                </h1>
+                <p class="splash-hero-sub">Download Instagram audio in MP3 or M4A format from Reels, Posts, Stories and Videos. No login, no app, completely free and works on all devices.</p>
                 <form @submit.prevent="submitInsta()" x-ref="instaForm" method="POST" action="/insta-fetch">
                     <div class="splash-search pi">
                         @csrf
@@ -33,6 +37,13 @@
                         </label>
                     </div>
                 </form>
+                <div class="splash-trust-badges">
+                    <span>✓ No Watermark</span>
+                    <span>✓ MP3 Download</span>
+                    <span>✓ High Quality</span>
+                    <span>✓ Unlimited</span>
+                    <span>✓ Free Forever</span>
+                </div>
             </div>
 
             {{-- Result card with player --}}
