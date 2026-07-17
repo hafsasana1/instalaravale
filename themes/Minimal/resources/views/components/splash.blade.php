@@ -12,29 +12,36 @@
                 </h1>
                 <p class="splash-hero-sub">Download Instagram audio in MP3 or M4A format from Reels, Posts, Stories and Videos. No login, no app, completely free and works on all devices.</p>
                 <form @submit.prevent="submitInsta()" x-ref="instaForm" method="POST" action="/insta-fetch">
-                    <div class="splash-search pi">
+                    <div class="splash-search pi" x-data="{ fmtOpen: false }">
                         @csrf
                         <input x-model="instaUrl" name="url" type="url"
                                placeholder="Paste Instagram Reel, Post or Story link here..."
                                aria-label="Instagram URL" class="splash-search-input pi-end" required>
-                        <button type="button" @click.prevent="pasteInsta()" x-show="canPaste"
-                                class="splash-paste-button mi-end" aria-label="Paste">
-                            <x-theme::icon.clipboard class="icon mi-end" aria-hidden="true"/>
-                            <span aria-hidden="true">Paste</span>
-                        </button>
+
+                        {{-- Format dropdown (replaces Paste button) --}}
+                        <div class="fmt-dropdown" @click.outside="fmtOpen = false">
+                            <button type="button" class="fmt-trigger" @click="fmtOpen = !fmtOpen" aria-haspopup="listbox">
+                                <span class="fmt-label" x-text="instaFormat.toUpperCase()">MP3</span>
+                                <span class="fmt-quality">Best con</span>
+                                <svg class="fmt-chevron" :class="{ 'fmt-chevron--open': fmtOpen }" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                            <ul class="fmt-menu" x-show="fmtOpen" x-cloak role="listbox">
+                                <li class="fmt-option" :class="{ 'fmt-option--active': instaFormat === 'mp3' }" @click="instaFormat = 'mp3'; fmtOpen = false" role="option">
+                                    <span class="fmt-opt-name">MP3</span>
+                                    <span class="fmt-opt-desc">Best quality</span>
+                                </li>
+                                <li class="fmt-option" :class="{ 'fmt-option--active': instaFormat === 'm4a' }" @click="instaFormat = 'm4a'; fmtOpen = false" role="option">
+                                    <span class="fmt-opt-name">M4A</span>
+                                    <span class="fmt-opt-desc">Original audio</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <input type="hidden" name="format" :value="instaFormat">
+
                         <button :disabled="instaProcessing" type="submit" class="splash-search-button splash-search-button--insta">
-                            <span x-show="!instaProcessing">Extract Audio</span>
+                            <span x-show="!instaProcessing">Download</span>
                             <x-theme::icon.loading x-show="instaProcessing" class="icon" x-cloak="true"/>
                         </button>
-                    </div>
-                    <div class="insta-format-row">
-                        <span class="insta-format-label">Format:</span>
-                        <label class="insta-format-option" :class="{ active: instaFormat === 'mp3' }">
-                            <input type="radio" x-model="instaFormat" value="mp3" name="format" hidden> MP3
-                        </label>
-                        <label class="insta-format-option" :class="{ active: instaFormat === 'm4a' }">
-                            <input type="radio" x-model="instaFormat" value="m4a" name="format" hidden> M4A
-                        </label>
                     </div>
                 </form>
                 <div class="splash-trust-badges">

@@ -456,35 +456,96 @@ body {
 }
 
 /** - INSTAGRAM FORMAT ROW - */
-.insta-format-row {
+/* ── Format dropdown (inside search bar) ── */
+.fmt-dropdown {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 0.625rem;
-    margin-top: 0.75rem;
-    padding-left: 0.25rem;
+    align-self: stretch;
+    border-left: 1.5px solid rgba(0,0,0,0.08);
+    padding: 0 0.125rem;
+    flex-shrink: 0;
 }
 
-.insta-format-label {
-    color: rgba(255,255,255,0.85);
-    font-size: 0.95rem;
+.fmt-trigger {
+    all: initial;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    color: var(--clr-text);
+    white-space: nowrap;
+    transition: background 150ms;
+    line-height: 1;
+}
+
+.fmt-trigger:hover { background: rgba(0,0,0,0.05); }
+
+.fmt-label {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #222;
+}
+
+.fmt-quality {
+    font-size: 0.72rem;
+    color: #E1306C;
     font-weight: 600;
 }
 
-.insta-format-option {
-    cursor: pointer;
-    padding: 0.35rem 0.875rem;
-    border-radius: 999px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.7);
-    border: 1.5px solid rgba(255,255,255,0.35);
-    transition: background 200ms, color 200ms, border-color 200ms;
+.fmt-chevron {
+    color: #888;
+    transition: transform 200ms;
+    flex-shrink: 0;
 }
 
-.insta-format-option.active {
-    background: rgba(255,255,255,0.9);
-    color: #E1306C;
-    border-color: transparent;
+.fmt-chevron--open {
+    transform: rotate(180deg);
+}
+
+.fmt-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 160px;
+    background: #fff;
+    border-radius: 0.625rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    border: 1px solid rgba(0,0,0,0.07);
+    list-style: none;
+    margin: 0;
+    padding: 0.375rem;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.fmt-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background 150ms;
+}
+
+.fmt-option:hover { background: #f5f5f5; }
+
+.fmt-option--active { background: #fff0f5; }
+
+.fmt-opt-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #222;
+}
+
+.fmt-opt-desc {
+    font-size: 0.75rem;
+    color: #888;
 }
 
 /** - SPLASH VIDEO - */
