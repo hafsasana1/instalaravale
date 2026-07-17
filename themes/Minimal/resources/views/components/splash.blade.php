@@ -1,73 +1,8 @@
 <section class="splash" aria-label="Downloader Section" x-data="SplashApp()">
     <div class="container">
 
-        {{-- Tab switcher --}}
-        <div class="splash-tabs">
-            <button class="splash-tab" :class="{ 'is-active': tab === 'tiktok' }" @click="switchTab('tiktok')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.84 1.56V6.81a4.85 4.85 0 01-1.07-.12z"/></svg>
-                TikTok Video
-            </button>
-            <button class="splash-tab" :class="{ 'is-active': tab === 'instagram' }" @click="switchTab('instagram')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                Instagram Audio
-            </button>
-        </div>
-
-        {{-- ===== TIKTOK TAB ===== --}}
-        <div x-show="tab === 'tiktok'" x-cloak>
-            <div class="splash-form" x-show="!tiktokVideo">
-                <h1>@lang('Download TikTok Video')</h1>
-                <form @submit.prevent="submitTikTok()" x-ref="tiktokForm" method="POST" action="/fetch">
-                    <div class="splash-search pi">
-                        @csrf
-                        <input x-model="tiktokUrl" name="url" type="url" placeholder="@lang('Just insert a TikTok link')"
-                               aria-label="@lang('Search Tiktok Video')" class="splash-search-input pi-end" required>
-                        <button type="button" @click.prevent="pasteTikTok()" x-show="canPaste"
-                                class="splash-paste-button mi-end" aria-label="@lang('Paste')">
-                            <x-theme::icon.clipboard class="icon mi-end" aria-hidden="true"/>
-                            <span aria-hidden="true">@lang("Paste")</span>
-                        </button>
-                        <button :disabled="tiktokProcessing" type="submit" class="splash-search-button">
-                            <span x-show="!tiktokProcessing">@lang('Download')</span>
-                            <x-theme::icon.loading x-show="tiktokProcessing" class="icon" x-cloak="true"/>
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <x-theme::ad.hero-section-ad/>
-
-            <template x-if="tiktokVideo">
-                <div class="splash-video-wrapper">
-                    <div class="splash-video">
-                        <img class="splash-video-bg" x-show="!imageFailed" alt="Splash Bg"
-                             :src="decodeURIComponent(tiktokVideo?.coverURL ?? '')"
-                             role="presentation" @@error="onImageFail()" crossorigin="anonymous">
-                        <img :src="tiktokVideo?.author.avatar" :alt="tiktokVideo?.author.username"/>
-                        <h2 x-text="tiktokVideo?.author.username"></h2>
-                        <p x-text="tiktokVideo?.caption"></p>
-                        <a x-show="tiktokVideo?.watermark?.url" :href="tiktokVideo?.watermark?.url" target="_blank"
-                           referrerpolicy="no-referrer" data-extension="mp4" :data-size="tiktokVideo?.watermark?.size"
-                           @click.prevent="downloadVideo($event)">@lang('Original Video with Watermark')</a>
-
-                        <template x-for="dld in tiktokVideo?.downloadUrls" :key="dld.idx">
-                            <a :href="dld.url" target="_blank" referrerpolicy="no-referrer" :data-size="dld.size"
-                               data-extension="mp4" @click.prevent="downloadVideo($event)">
-                                <span x-text="downloadText(dld) + downloadSize(dld)"></span>
-                            </a>
-                        </template>
-
-                        <a x-show="tiktokVideo?.mp3URL" :href="tiktokVideo?.mp3URL" target="_blank"
-                           referrerpolicy="no-referrer" data-extension="mp3"
-                           @click.prevent="downloadVideo($event)">@lang('Download MP3 Audio')</a>
-                    </div>
-                    <button class="reset-video" @click="resetTikTok()">@lang('Download another video')</button>
-                </div>
-            </template>
-        </div>
-
-        {{-- ===== INSTAGRAM AUDIO TAB ===== --}}
-        <div x-show="tab === 'instagram'" x-cloak>
+        {{-- ===== INSTAGRAM AUDIO ===== --}}
+        <div>
 
             {{-- Search form (hidden when result shown) --}}
             <div x-show="!instaResult">
@@ -194,14 +129,6 @@
 <script>
 function SplashApp() {
     return {
-        tab: 'tiktok',
-
-        /* ─── TikTok ─── */
-        tiktokVideo: null,
-        tiktokUrl: "",
-        tiktokProcessing: false,
-        imageFailed: false,
-
         /* ─── Instagram ─── */
         instaResult: null,
         instaUrl: "",
@@ -212,61 +139,6 @@ function SplashApp() {
         previewSrc: "",
 
         get canPaste() { return !!window.navigator.clipboard; },
-
-        switchTab(t) { this.tab = t; },
-
-        /* ====== TIKTOK ====== */
-        submitTikTok() {
-            if (!validateTikTokURL(this.tiktokUrl)) {
-                return window.toasted && window.toasted.show("@lang('Please enter a valid TikTok URL')", { type: "error" });
-            }
-            this.tiktokProcessing = true;
-            const self = this;
-            const fd = new FormData(this.$refs.tiktokForm);
-
-            fetch('/fetch', { method: 'POST', body: fd, headers: { "accept": "application/json" } })
-                .then(r => {
-                    if (r.status !== 200 || !r.headers.get('content-type')?.includes('json'))
-                        throw new window.RequestError(r);
-                    return r.json();
-                })
-                .then(d => { self.imageFailed = false; self.tiktokVideo = d; })
-                .catch(e => window.handleErrors(e))
-                .finally(() => { self.tiktokProcessing = false; });
-        },
-        pasteTikTok() {
-            if (this.canPaste) navigator.clipboard.readText().then(t => { this.tiktokUrl = t; });
-        },
-        onImageFail() { this.imageFailed = true; },
-        downloadText(d) {
-            return (d.isHD ? "@lang('Without Watermark [:idx] HD')" : "@lang('Without Watermark [:idx]')")
-                .replace(":idx", d.idx + 1);
-        },
-        downloadSize(d) { return d.size ? ' ' + bytesToSize(d.size) : ''; },
-        downloadVideo(e) {
-            let a = e.target;
-            if (a.tagName.toLowerCase() !== 'a') a = a.closest('a');
-            if (!a || !a.href) return;
-            const u = new URL('/download', window.location.origin);
-            const ext = a.dataset.extension ?? 'mp4';
-            const sz  = a.dataset.size;
-            u.searchParams.set('url', btoa(a.href));
-            u.searchParams.set('extension', ext);
-            if (sz?.trim()) u.searchParams.set('size', sz);
-            open(u.toString(), "_blank");
-        },
-        resetTikTok(url = "") {
-            this.tiktokUrl = url;
-            this.tiktokVideo = null;
-            return this.$nextTick();
-        },
-        searchVideo(event) {
-            const self = this;
-            this.resetTikTok(event.detail).then(() => {
-                self.submitTikTok();
-                window.scrollTo({ top: 0 });
-            });
-        },
 
         /* ====== INSTAGRAM ====== */
         submitInsta() {
@@ -332,14 +204,6 @@ function bytesToSize(bytes) {
     return new Intl.NumberFormat("en", {
         style: "unit", unit: units[unit], unitDisplay: 'narrow', notation: 'compact'
     }).format(bytes / 1024 ** unit);
-}
-
-function validateTikTokURL(url) {
-    return /^(https?:\/\/)?(www\.)?vm\.tiktok\.com\/[^\n]+\/?$/.test(url)
-        || /^(https?:\/\/)?(www\.)?m\.tiktok\.com\/v\/[^\n]+\.html([^\n]+)?$/.test(url)
-        || /^(https?:\/\/)?(www\.)?tiktok\.com\/t\/[^\n]+\/?$/.test(url)
-        || /^(https?:\/\/)?(www\.)?tiktok\.com\/@[^\n]+\/video\/[^\n]+$/.test(url)
-        || /^(https?:\/\/)?(www\.)?vt\.tiktok\.com\/[^\n]+\/?$/.test(url);
 }
 
 function validateInstagramURL(url) {
