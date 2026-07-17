@@ -1126,6 +1126,98 @@ body {
     }
 }
 
+/** - INSTAGRAM FORMATS SECTION - */
+.insta-formats-section {
+    --container-width: 1180px;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+}
+
+.insta-formats-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.insta-formats-header h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--clr-text);
+    margin-bottom: 1rem;
+}
+
+.insta-formats-header p {
+    font-size: 1.05rem;
+    color: var(--clr-text-muted, #666);
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.insta-formats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.insta-format-card {
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+    padding: 1.75rem 1.5rem;
+    background: #fff;
+    border-top: 3px solid transparent;
+    border-image: linear-gradient(to right, #833AB4, #E1306C, #F77737) 1;
+    border-image-slice: 0 0 0 0 / 0 0 0 0;
+    border-top: 3px solid;
+    border-image: linear-gradient(to right, #833AB4, #E1306C) 1;
+    transition: box-shadow 0.2s;
+}
+
+.insta-format-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+}
+
+.insta-format-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+.insta-format-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin-bottom: 0.75rem;
+}
+
+.insta-format-card p {
+    font-size: 0.9rem;
+    color: var(--clr-text-muted, #666);
+    line-height: 1.65;
+    margin: 0;
+}
+
+@media screen and (max-width: 991px) {
+    .insta-formats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .insta-formats-header h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .insta-formats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /** - POPULAR VIDEOS SECTION - */
 .popular-videos-section {
     margin-top: 4rem;
