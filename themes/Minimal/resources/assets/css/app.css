@@ -843,9 +843,9 @@ body {
 
     .header nav a {
         text-decoration: none;
-        font-size: 18px;
-        color: black;
-        padding: 0.5rem 1rem;
+        font-size: 14px;
+        color: #333;
+        padding: 0.4rem 0.65rem;
         border-radius: 0.5rem;
         transition: color 200ms, background-color 200ms ease-in-out;
     }
@@ -854,6 +854,7 @@ body {
     .header nav a:focus-visible,
     .header nav a.is-active {
         color: var(--clr-primary);
+        background-color: rgba(0,0,0,0.04);
     }
 
     .header nav a.is-active {
@@ -864,6 +865,19 @@ body {
         outline: 2px solid var(--clr-primary--20);
         outline-offset: 1px;
     }
+}
+
+/* Nav icon+text links */
+.nav-item-link {
+    display: flex !important;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.nav-item-link svg {
+    flex-shrink: 0;
 }
 
 @media screen and (max-width: 991px) {
