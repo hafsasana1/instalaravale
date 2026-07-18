@@ -47,11 +47,46 @@ class InstagramService
         return 'ffmpeg';
     }
 
+    /**
+     * Build (or reuse) a Netscape cookies file from env-supplied Instagram session cookies.
+     * Returns the path if a sessionid is configured, null otherwise.
+     */
+    private static function cookiesFile(): ?string
+    {
+        $sessionId = env('INSTAGRAM_SESSION_ID', '');
+        $csrfToken = env('INSTAGRAM_CSRFTOKEN', '');
+
+        if (empty(trim($sessionId))) {
+            return null;
+        }
+
+        $path = storage_path('app/instagram_cookies.txt');
+
+        // Regenerate whenever the session changes
+        $line   = fn(string $name, string $val) =>
+            implode("\t", ['.instagram.com', 'TRUE', '/', 'TRUE', '1893456000', $name, $val]);
+
+        $lines  = ["# Netscape HTTP Cookie File", $line('sessionid', trim($sessionId))];
+        if (!empty(trim($csrfToken))) {
+            $lines[] = $line('csrftoken', trim($csrfToken));
+        }
+
+        file_put_contents($path, implode("\n", $lines) . "\n");
+        return $path;
+    }
+
     public function getInfo(string $url): array
     {
+        $cookiesFile = self::cookiesFile();
+
+        $cookiesArg = $cookiesFile
+            ? '--cookies ' . escapeshellarg($cookiesFile)
+            : '';
+
         $cmd = sprintf(
-            '%s --dump-json --no-playlist --no-warnings --socket-timeout 30 %s 2>&1',
+            '%s --dump-json --no-playlist --no-warnings --socket-timeout 30 %s %s 2>&1',
             escapeshellarg(self::ytdlpBin()),
+            $cookiesArg,
             escapeshellarg($url)
         );
 
@@ -62,8 +97,12 @@ class InstagramService
         if ($exitCode !== 0 || empty(trim($raw))) {
             // Surface a user-friendly message
             $hint = '';
-            if (stripos($raw, 'login') !== false || stripos($raw, 'private') !== false) {
-                $hint = ' The content may be private or require login.';
+            if (stripos($raw, 'login') !== false || stripos($raw, 'private') !== false || stripos($raw, 'empty media') !== false) {
+                if (!$cookiesFile) {
+                    $hint = ' Instagram requires authentication. Please configure INSTAGRAM_SESSION_ID in your environment settings.';
+                } else {
+                    $hint = ' The content may be private, or your Instagram session cookie may have expired.';
+                }
             }
             throw new \RuntimeException('Could not retrieve Instagram media info.' . $hint);
         }
@@ -143,11 +182,15 @@ class InstagramService
         $tmpBase  = sys_get_temp_dir() . '/ig_audio_' . uniqid('', true);
         $template = $tmpBase . '.%(ext)s';
 
+        $cookiesFile = self::cookiesFile();
+        $cookiesArg  = $cookiesFile ? '--cookies ' . escapeshellarg($cookiesFile) : '';
+
         $cmd = sprintf(
-            '%s -x --audio-format %s --audio-quality 0 --no-playlist --no-warnings --socket-timeout 30 --ffmpeg-location %s -o %s %s 2>&1',
+            '%s -x --audio-format %s --audio-quality 0 --no-playlist --no-warnings --socket-timeout 30 --ffmpeg-location %s %s -o %s %s 2>&1',
             escapeshellarg(self::ytdlpBin()),
             escapeshellarg($format),
             escapeshellarg(dirname(self::ffmpegBin())),
+            $cookiesArg,
             escapeshellarg($template),
             escapeshellarg($url)
         );

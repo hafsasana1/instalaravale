@@ -25,6 +25,10 @@ Route::middleware(['web', 'theme'])->group(function () {
     Route::view('/tos', "theme::tos")->name('tos');
     Route::view('/privacy', "theme::privacy")->name('privacy');
     Route::view('/instagram-reels-audio-download', "theme::reels-audio")->name('reels-audio');
+    Route::view('/instagram-stories-audio-download', "theme::stories-audio")->name('stories-audio');
+    Route::view('/instagram-highlights-download', "theme::highlights")->name('highlights');
+    Route::view('/guide', "theme::guide")->name('guide');
+    Route::view('/blog', "theme::blog")->name('blog');
 });
 
 Route::localization()->middleware(['web', 'theme'])->group(function () {
