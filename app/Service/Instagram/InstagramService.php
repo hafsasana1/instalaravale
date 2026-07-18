@@ -53,8 +53,9 @@ class InstagramService
      */
     private static function cookiesFile(): ?string
     {
-        $sessionId = env('INSTAGRAM_SESSION_ID', '');
-        $csrfToken = env('INSTAGRAM_CSRFTOKEN', '');
+        // env() reads phpdotenv-loaded vars; getenv() reads the real process env (Replit Secrets)
+        $sessionId = env('INSTAGRAM_SESSION_ID') ?: getenv('INSTAGRAM_SESSION_ID') ?: '';
+        $csrfToken = env('INSTAGRAM_CSRFTOKEN') ?: getenv('INSTAGRAM_CSRFTOKEN') ?: '';
 
         if (empty(trim($sessionId))) {
             return null;
